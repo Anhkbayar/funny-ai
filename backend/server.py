@@ -1,15 +1,26 @@
 import torch
 import torch.nn as nn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from fastapi.responses import PlainTextResponse
 from modules import Generator
 import base64
 from io import BytesIO
 from PIL import Image
 
+
 latent_dim = 100
 
+limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
+app.state.limiter = limiter
+
+@app.exception_handler(RateLimitExceeded)
+def rate_limit_handler(request, exc):
+    return PlainTextResponse("Яасан их хүсэлт вэ түр хүлээгээрэй", status_code=429)
 
 app.add_middleware(
     CORSMiddleware,
@@ -29,7 +40,8 @@ def home():
     return {"msg": "Модел бэлэн болсон"}
 
 @app.get("/generate")
-def generate():
+@limiter.limit("5/minute")
+def generate(request: Request):
     z = torch.randn(1, latent_dim).to(device)
     
     with torch.no_grad():
