@@ -1,0 +1,28 @@
+.container {
+  text-align: center;
+  padding: 30px;
+  font-family: Arial, sans-serif;
+}
+
+button {
+  padding: 12px 20px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: none;
+  background-color: #4c8bf5;
+  color: white;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #7faaf5;
+}
+
+.generated-img {
+  margin-top: 20px;
+  width: 256px;
+  height: 256px;
+  object-fit: contain;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+}

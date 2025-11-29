@@ -20,7 +20,7 @@ app.add_middleware(
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = Generator()
+model = Generator(latent_dim).to(device)
 model.load_state_dict(torch.load("generator.pth",map_location="cpu"))
 model.eval()
 
@@ -38,8 +38,8 @@ def generate():
     img_tensor = (img_tensor + 1)/2
     img = Image.fromarray((img_tensor.permute(1,2,0).numpy()*255).astype("uint8"))
     
-    buffer = BytesIO
-    img.save(buffer, format="JPG")
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
     img_bytes = buffer.getvalue()
     base64_img = base64.b64encode(img_bytes).decode("utf-8")
     
