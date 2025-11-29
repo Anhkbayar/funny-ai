@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
@@ -28,9 +27,7 @@ function App() {
       <button onClick={generateImage} disabled={loading}>
         {loading ? "Үүсгэж байна..... " : "Үүсгэх"}
       </button>
-      <div className='picContainer'>
-        {image && <img src={image} alt="GAN test" className='generatedImage' />}
-      </div>
+        {image && <img src={image} alt="GAN test" style={{ width: 256, height: 256}} className='generatedImage' />}
     </div>
   );
 }
