@@ -35,4 +35,12 @@ def generate():
     with torch.no_grad():
         img_tensor = model(z).cpu().squeeze(0)
         
-    img_tensor = (img_tensor + 1)/
+    img_tensor = (img_tensor + 1)/2
+    img = Image.fromarray((img_tensor.permute(1,2,0).numpy()*255).astype("uint8"))
+    
+    buffer = BytesIO
+    img.save(buffer, format="JPG")
+    img_bytes = buffer.getvalue()
+    base64_img = base64.b64encode(img_bytes).decode("utf-8")
+    
+    return {"image": base64_img}
