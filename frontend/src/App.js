@@ -5,17 +5,35 @@ import './App.css';
 function App() {
   const [image, setImage] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [text, setText] = useState("")
+  const [error, setError] = useState("")
+
+  const texts = [
+    "Юу гарч ирч байна хаха",
+    "Жалга2",
+    "Хичээж л явна даа",
+    "Сэтгэгдлээ үлдээгээрэй XD",
+    "Чадлаараа л сургалаа хэхэ",
+    "💩"
+  ]
 
   const generateImage = async () => {
     setLoading(true)
     setImage(null)
+
+    const randomPrompt = texts[Math.floor(Math.random() * texts.length)];
+    setText(randomPrompt);
 
     try {
       const res = await axios.get("http://localhost:8000/generate")
       setImage("data: image/png;base64," + res.data.image)
     } catch (e) {
       console.error(e)
-      alert("Зураг үүсгэхэд алдаа гарлаа")
+      if (e.response && e.response.status === 429) {
+        setError("Минутад 10 зураг л гаргаж өгнөө.");
+      } else {
+        setError("Зураг үүсгэхэд алдаа гарлаа");
+      }
     }
 
     setLoading(false)
@@ -27,7 +45,9 @@ function App() {
       <button onClick={generateImage} disabled={loading}>
         {loading ? "Үүсгэж байна..... " : "Үүсгэх"}
       </button>
-        {image && <img src={image} alt="GAN test" style={{ width: 256, height: 256}} className='generatedImage' />}
+      {image && <img src={image} alt="GAN test" style={{ width: 256, height: 256 }} className='generatedImage' />}
+      {text && <p>{text}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 }

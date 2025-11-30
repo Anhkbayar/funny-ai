@@ -40,7 +40,7 @@ def home():
     return {"msg": "Модел бэлэн болсон"}
 
 @app.get("/generate")
-@limiter.limit("5/minute")
+@limiter.limit("10/minute")
 def generate(request: Request):
     z = torch.randn(1, latent_dim).to(device)
     
