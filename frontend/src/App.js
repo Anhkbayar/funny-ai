@@ -25,7 +25,7 @@ function App() {
     setText(randomPrompt);
 
     try {
-      const res = await axios.get("http://localhost:8000/generate")
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/generate`)
       setImage("data: image/png;base64," + res.data.image)
     } catch (e) {
       console.error(e)
