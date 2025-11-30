@@ -32,7 +32,7 @@ app.add_middleware(
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = Generator(latent_dim).to(device)
-model.load_state_dict(torch.load("generator.pth",map_location="cpu"))
+model.load_state_dict(torch.load("../generator.pth",map_location="cpu"))
 model.eval()
 
 @app.get("/")
