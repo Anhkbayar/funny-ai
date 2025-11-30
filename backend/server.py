@@ -22,9 +22,15 @@ app.state.limiter = limiter
 def rate_limit_handler(request, exc):
     return PlainTextResponse("Яасан их хүсэлт вэ түр хүлээгээрэй", status_code=429)
 
+origins = [
+    "https://funny-ai-two.vercel.app",
+    "http://localhost:3000"           
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_credentials=True,
+    allow_origins=origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
