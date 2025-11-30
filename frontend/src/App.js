@@ -7,6 +7,7 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [text, setText] = useState("")
   const [error, setError] = useState("")
+  const [rateLimited, setRateLimited] = useState(false)
 
   const texts = [
     "Юу гарч ирч байна хаха",
@@ -20,6 +21,7 @@ function App() {
   const generateImage = async () => {
     setLoading(true)
     setImage(null)
+    setError("")
 
     const randomPrompt = texts[Math.floor(Math.random() * texts.length)];
     setText(randomPrompt);
@@ -27,12 +29,14 @@ function App() {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}/generate`)
       setImage("data: image/png;base64," + res.data.image)
-      setError("")
     } catch (e) {
       if (e.response && e.response.status === 429) {
-        setError("Минутад 10 зураг л гаргаж өгнөө.");
+        setError("Минутад 10 зураг л гаргаж өгнөө.")
+        setRateLimited(true)
+
+        setTimeout(()=>setRateLimited(false), 30*1000)
       } else {
-        setError("Зураг үүсгэхэд алдаа гарлаа");
+        setError("Зураг үүсгэхэд алдаа гарлаа")
       }
     }
 
@@ -42,7 +46,7 @@ function App() {
     <div className='container'>
       <h1>Зураг үүсгэгч XD</h1>
 
-      <button onClick={generateImage} disabled={loading}>
+      <button onClick={generateImage} disabled={loading || rateLimited}>
         {loading ? "Үүсгэж байна..... " : "Үүсгэх"}
       </button>
       {image && <img src={image} alt="GAN test" style={{ width: 256, height: 256 }} className='generatedImage' />}
