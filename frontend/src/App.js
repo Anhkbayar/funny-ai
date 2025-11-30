@@ -27,8 +27,8 @@ function App() {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}/generate`)
       setImage("data: image/png;base64," + res.data.image)
+      setError("")
     } catch (e) {
-      console.error(e)
       if (e.response && e.response.status === 429) {
         setError("Минутад 10 зураг л гаргаж өгнөө.");
       } else {
