@@ -2,7 +2,7 @@
   "rewrites": [
     { 
       "source": "/api/(.*)",
-      "destination": "https://funny-ai.onrender.com"
+      "destination": "https://funny-ai.onrender.com/$1"
     }
   ]
 }
