@@ -7,16 +7,37 @@ class Generator(nn.Module):
         self.model = nn.Sequential(
             nn.Linear(latent_dim, 128 * 8 * 8),
             nn.ReLU(),
-            nn.Unflatten(1, (128, 8, 8)),
+            nn.Unflatten(1, (128, 8, 8)),  # 128x8x8
+
+            nn.Upsample(scale_factor=2),    # 16x16
+            nn.Conv2d(128, 128, 3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.ReLU(True),
+            nn.Conv2d(128, 128, 3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.ReLU(True),
+
+            nn.Upsample(scale_factor=2),    # 32x32
+            nn.Conv2d(128, 64, 3, padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(True),
+            nn.Conv2d(64, 64, 3, padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(True),
+
+            nn.Upsample(scale_factor=2),    # 64x64
+            nn.Conv2d(64, 32, 3, padding=1),
+            nn.BatchNorm2d(32),
+            nn.ReLU(True),
+            nn.Conv2d(32, 32, 3, padding=1),
+            nn.BatchNorm2d(32),
+            nn.ReLU(True),
+
             nn.Upsample(scale_factor=2),
-            nn.Conv2d(128, 128, kernel_size=3, padding=1),
-            nn.BatchNorm2d(128, momentum=0.78),
-            nn.ReLU(),
-            nn.Upsample(scale_factor=2),
-            nn.Conv2d(128, 64, kernel_size=3, padding=1),
-            nn.BatchNorm2d(64, momentum=0.78),
-            nn.ReLU(),
-            nn.Conv2d(64, 3, kernel_size=3, padding=1),
+            nn.Conv2d(32, 16, 3, padding=1),
+            nn.BatchNorm2d(16),
+            nn.ReLU(True),
+            nn.Conv2d(16, 3, 3, padding=1),
             nn.Tanh()
         )
 
@@ -45,6 +66,7 @@ class Discriminator(nn.Module):
         nn.BatchNorm2d(256, momentum=0.8),
         nn.LeakyReLU(0.25),
         nn.Dropout(0.25),
+        nn.AdaptiveAvgPool2d((5,5)),
         nn.Flatten(),
         nn.Linear(256 * 5 * 5, 1),
         nn.Sigmoid()
